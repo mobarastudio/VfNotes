@@ -29,9 +29,9 @@ private slots:
 
     void on_pushButtonRemove_clicked();
 
-    void on_pushButtonAbout_clicked();
-
     void on_plainTextEditContent_textChanged();
+
+    void on_pushButtonRename_clicked();
 
 private:
     Ui::MainWindow *ui;

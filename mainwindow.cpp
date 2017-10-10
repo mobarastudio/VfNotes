@@ -111,13 +111,18 @@ void MainWindow::on_pushButtonRemove_clicked()
     }
 }
 
-void MainWindow::on_pushButtonAbout_clicked()
-{
-    QMessageBox::information(this, "info", "VfNotes - beta version");
-}
-
 void MainWindow::on_plainTextEditContent_textChanged()
 {
     if(!change) change = true;
     else isModified = true;
+}
+
+void MainWindow::on_pushButtonRename_clicked()
+{
+    currnetFile.close();
+    currnetFile.rename("notes\\"+ui->lineEditNew->text());
+    lastFile = "notes\\"+ui->lineEditNew->text();
+    ui->labelCurrentNote->setText(ui->lineEditNew->text());
+    ui->lineEditNew->clear();
+    refresh();
 }
