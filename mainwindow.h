@@ -6,6 +6,7 @@
 #include <QFile>
 #include <QTextStream>
 #include <QMessageBox>
+#include <QCloseEvent>
 
 namespace Ui {
 class MainWindow;
@@ -21,6 +22,7 @@ public:
 
 private slots:
     void on_listWidgetNotes_clicked(const QModelIndex &index);
+
     void refresh();
 
     void on_pushButtonSave_clicked();
@@ -33,6 +35,7 @@ private slots:
 
     void on_pushButtonRename_clicked();
 
+    void closeEvent(QCloseEvent *event);
 private:
     Ui::MainWindow *ui;
     QDir dir;
