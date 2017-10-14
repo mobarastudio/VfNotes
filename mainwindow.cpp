@@ -41,10 +41,9 @@ void MainWindow::on_listWidgetNotes_clicked(const QModelIndex &index)
     isModified = false;
     lastFile = dir.currentPath()+"\\notes\\"+index.data().toString();
     currnetFile.setFileName(lastFile);
-    ui->labelCurrentNote->setText(index.data().toString());
+    this->setWindowTitle(index.data().toString()+" - VfNotes 1.0");
     currnetFile.open(QIODevice::ReadOnly | QIODevice::Text);
     QString content;
-    //while(!currnetFile.atEnd()) content+=currnetFile.readLine();
     QTextStream stream(&currnetFile);
     stream.setCodec("UTF-8");
     while(!stream.atEnd()) content+=currnetFile.readLine();
@@ -110,7 +109,7 @@ void MainWindow::on_pushButtonRemove_clicked()
         currnetFile.remove();
         refresh();
         lastFile.clear();
-        ui->labelCurrentNote->setText("...");
+        this->setWindowTitle("VfNotes 1.0");
         ui->plainTextEditContent->clear();
         ui->plainTextEditContent->setEnabled(false);
     }
@@ -135,7 +134,7 @@ void MainWindow::on_pushButtonRename_clicked()
     currnetFile.close();
     currnetFile.rename("notes\\"+ui->lineEditNew->text());
     lastFile = "notes\\"+ui->lineEditNew->text();
-    ui->labelCurrentNote->setText(ui->lineEditNew->text());
+    this->setWindowTitle(ui->lineEditNew->text()+" - VfNotes 1.0");
     ui->lineEditNew->clear();
     refresh();
 }
@@ -145,11 +144,6 @@ void MainWindow::closeEvent (QCloseEvent *event)
     if(isModified)
     {
         QMessageBox::StandardButton exitButton = QMessageBox::question(this, "VfNotes", tr("Do you want save changes?"), QMessageBox::Cancel | QMessageBox::No | QMessageBox::Yes);
-        /*if(exitButton == QMessageBox::Yes)
-        {
-            on_pushButtonSave_clicked();
-            event->ignore();
-        }*/
         switch(exitButton)
         {
             case QMessageBox::Yes:

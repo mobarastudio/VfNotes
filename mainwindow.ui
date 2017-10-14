@@ -11,22 +11,10 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>VfNotes - beta version</string>
+   <string>VfNotes 1.0</string>
   </property>
   <widget class="QWidget" name="centralWidget">
    <layout class="QGridLayout" name="gridLayout">
-    <item row="0" column="1" colspan="5">
-     <widget class="QLabel" name="labelCurrentNote">
-      <property name="font">
-       <font>
-        <pointsize>16</pointsize>
-       </font>
-      </property>
-      <property name="text">
-       <string>...</string>
-      </property>
-     </widget>
-    </item>
     <item row="2" column="5">
      <widget class="QPushButton" name="pushButtonRename">
       <property name="font">
@@ -87,7 +75,7 @@
       </property>
      </widget>
     </item>
-    <item row="1" column="1" colspan="5">
+    <item row="0" column="1" rowspan="2" colspan="5">
      <widget class="QPlainTextEdit" name="plainTextEditContent">
       <property name="enabled">
        <bool>false</bool>
