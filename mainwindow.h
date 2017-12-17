@@ -2,12 +2,9 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-#include <QFileSystemModel>
-#include <QFile>
-#include <QTextStream>
 #include <QMessageBox>
 #include <QCloseEvent>
-
+#include "QFilesContainer.h"
 namespace Ui {
 class MainWindow;
 }
@@ -23,8 +20,6 @@ public:
 private slots:
     void on_listWidgetNotes_clicked(const QModelIndex &index);
 
-    void refresh();
-
     void on_pushButtonSave_clicked();
 
     void on_pushButtonNew_clicked();
@@ -38,9 +33,7 @@ private slots:
     void closeEvent(QCloseEvent *event);
 private:
     Ui::MainWindow *ui;
-    QDir dir;
-    QFile currnetFile;
-    QString lastFile;
+    QFilesContainer notes;
     bool isModified, change;
     QModelIndex lastIndex;
 };

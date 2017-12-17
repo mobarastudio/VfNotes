@@ -1,5 +1,6 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include <QDir>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -7,20 +8,12 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
     isModified = change = false;
-    refresh();
+    ui->listWidgetNotes->addItems(notes.openDirectory(QDir::currentPath()+"\\notes\\"));
 }
 
 MainWindow::~MainWindow()
 {
     delete ui;
-}
-void MainWindow::refresh()
-{
-    ui->listWidgetNotes->clear();
-    dir.setPath(dir.currentPath()+"\\notes\\");
-    auto notesList = dir.entryList();
-    notesList.erase(notesList.begin(), notesList.begin()+2);
-    ui->listWidgetNotes->addItems(notesList);
 }
 
 void MainWindow::on_listWidgetNotes_clicked(const QModelIndex &index)
@@ -31,7 +24,7 @@ void MainWindow::on_listWidgetNotes_clicked(const QModelIndex &index)
     {
         auto reply = QMessageBox::question(this, "Test", "Do you want save changes?", QMessageBox::Yes|QMessageBox::No|QMessageBox::Cancel);
         if (reply == QMessageBox::Yes) on_pushButtonSave_clicked();
-        else if(reply == QMessageBox::No) currnetFile.close();
+        else if(reply == QMessageBox::No) notes.closeFile();
         else
         {
             ui->listWidgetNotes->setCurrentIndex(lastIndex);
@@ -39,32 +32,19 @@ void MainWindow::on_listWidgetNotes_clicked(const QModelIndex &index)
         }
     }
     isModified = false;
-    lastFile = dir.currentPath()+"\\notes\\"+index.data().toString();
-    currnetFile.setFileName(lastFile);
     this->setWindowTitle(index.data().toString()+" - VfNotes 1.0");
-    currnetFile.open(QIODevice::ReadOnly | QIODevice::Text);
-    QString content;
-    QTextStream stream(&currnetFile);
-    stream.setCodec("UTF-8");
-    while(!stream.atEnd()) content+=currnetFile.readLine();
-    ui->plainTextEditContent->setPlainText(content.toUtf8());
-    currnetFile.close();
+    ui->plainTextEditContent->setPlainText(notes.openFile(index.data().toString()));
     lastIndex = index;
 }
 
 void MainWindow::on_pushButtonSave_clicked()
 {
-    if(lastFile.isEmpty())
+    if(notes.checkOpenFile())
     {
         QMessageBox::information(this, "info", "File is not open!");
         return;
     }
-    QTextStream stream(&currnetFile);
-    stream.setCodec("UTF-8");
-    currnetFile.setFileName(lastFile);
-    currnetFile.open(QIODevice::WriteOnly | QIODevice::Truncate | QIODevice::Text);
-    stream<<ui->plainTextEditContent->toPlainText().toUtf8();
-    currnetFile.close();
+    notes.saveCurrentFile(ui->plainTextEditContent->toPlainText().toUtf8());
     isModified = false;
 }
 
@@ -76,29 +56,27 @@ void MainWindow::on_pushButtonNew_clicked()
         return;
     }
     change = false;
-    QFile file(dir.currentPath()+"\\notes\\"+ui->lineEditNew->text());
     if(isModified)
     {
         auto reply = QMessageBox::question(this, "Test", "Do you want save changes?", QMessageBox::Yes|QMessageBox::No|QMessageBox::Cancel);
         if (reply == QMessageBox::Yes)
         {
             on_pushButtonSave_clicked();
-            file.close();
+            notes.closeFile();
             ui->plainTextEditContent->clear();
         }
-        else if(reply == QMessageBox::No) currnetFile.close();
+        else if(reply == QMessageBox::No) notes.closeFile();
         else return;
     }
     isModified = false;
-    file.open(QIODevice::WriteOnly | QIODevice::ReadOnly | QIODevice::Text);
-    file.close();
-    refresh();
+    ui->listWidgetNotes->clear();
+    ui->listWidgetNotes->addItems(notes.newFile(ui->lineEditNew->text()));
     ui->lineEditNew->clear();
 }
 
 void MainWindow::on_pushButtonRemove_clicked()
 {
-    if(lastFile.isEmpty())
+    if(notes.checkOpenFile())
     {
         QMessageBox::information(this, "info", "File is not open!");
         return;
@@ -106,18 +84,18 @@ void MainWindow::on_pushButtonRemove_clicked()
     auto reply = QMessageBox::question(this, "Test", "Do you want remove this note?", QMessageBox::Yes|QMessageBox::No);
     if(reply == QMessageBox::Yes)
     {
-        currnetFile.remove();
-        refresh();
-        lastFile.clear();
+        ui->listWidgetNotes->clear();
+        ui->listWidgetNotes->addItems(notes.removeFile());
         this->setWindowTitle("VfNotes 1.0");
         ui->plainTextEditContent->clear();
         ui->plainTextEditContent->setEnabled(false);
+        isModified = change = false;
     }
 }
 
 void MainWindow::on_plainTextEditContent_textChanged()
 {
-    if(!lastFile.isEmpty())
+    if(!notes.checkOpenFile())
     {
         if(!change) change = true;
         else isModified = true;
@@ -131,12 +109,11 @@ void MainWindow::on_pushButtonRename_clicked()
         QMessageBox::information(this, "info", "Name is empty!");
         return;
     }
-    currnetFile.close();
-    currnetFile.rename("notes\\"+ui->lineEditNew->text());
-    lastFile = "notes\\"+ui->lineEditNew->text();
+    notes.renameFile(lastIndex.data().toString(), ui->lineEditNew->text());
     this->setWindowTitle(ui->lineEditNew->text()+" - VfNotes 1.0");
     ui->lineEditNew->clear();
-    refresh();
+    ui->listWidgetNotes->clear();
+    ui->listWidgetNotes->addItems(notes.getFilesList());
 }
 
 void MainWindow::closeEvent (QCloseEvent *event)
