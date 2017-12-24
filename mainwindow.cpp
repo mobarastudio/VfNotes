@@ -1,7 +1,6 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include <QDir>
-
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
@@ -9,11 +8,17 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
     isModified = change = false;
     ui->listWidgetNotes->addItems(notes.openDirectory(QDir::currentPath()+"\\notes\\"));
+    save = new QShortcut(QKeySequence(QKeySequence::Save), this);
+    connect(save, SIGNAL(activated()), this, SLOT(on_pushButtonSave_clicked()));
+    remove = new QShortcut(QKeySequence(QKeySequence::Delete), this);
+    connect(remove, SIGNAL(activated()), this, SLOT(on_pushButtonRemove_clicked()));
 }
 
 MainWindow::~MainWindow()
 {
     delete ui;
+    delete save;
+    delete remove;
 }
 
 void MainWindow::on_listWidgetNotes_clicked(const QModelIndex &index)

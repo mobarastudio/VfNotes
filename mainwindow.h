@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include <QMessageBox>
 #include <QCloseEvent>
+#include <QShortcut>
 #include "QFilesContainer.h"
 namespace Ui {
 class MainWindow;
@@ -31,11 +32,14 @@ private slots:
     void on_pushButtonRename_clicked();
 
     void closeEvent(QCloseEvent *event);
+
 private:
     Ui::MainWindow *ui;
     QFilesContainer notes;
     bool isModified, change;
     QModelIndex lastIndex;
+    QShortcut *save;
+    QShortcut *remove;
 };
 
 #endif // MAINWINDOW_H
