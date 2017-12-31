@@ -38,6 +38,7 @@ private slots:
     void closeEvent(QCloseEvent *event);
 
     void showSettingsWindow();
+    void showAboutWindow();
 
 private:
     Ui::MainWindow *ui;

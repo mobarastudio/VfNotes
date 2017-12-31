@@ -103,12 +103,19 @@
      <string>x</string>
     </property>
     <addaction name="actionsettings"/>
+    <addaction name="separator"/>
+    <addaction name="actionAbout"/>
    </widget>
    <addaction name="menux"/>
   </widget>
   <action name="actionsettings">
    <property name="text">
     <string>settings</string>
+   </property>
+  </action>
+  <action name="actionAbout">
+   <property name="text">
+    <string>About</string>
    </property>
   </action>
  </widget>

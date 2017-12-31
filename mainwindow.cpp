@@ -14,6 +14,7 @@ MainWindow::MainWindow(QWidget *parent) :
     remove = new QShortcut(QKeySequence(QKeySequence::Delete), this);
     connect(remove, SIGNAL(activated()), this, SLOT(on_pushButtonRemove_clicked()));
     connect(ui->actionsettings, SIGNAL(triggered(bool)), this, SLOT(showSettingsWindow()));
+    connect(ui->actionAbout, SIGNAL(triggered(bool)), this, SLOT(showAboutWindow()));
     connect(&s, &settingsWindow::notesFontSize, this, &MainWindow::setNotesFontSize);
     connect(&s, &settingsWindow::noteFontSize, this, &MainWindow::setNoteFontSize);
 }
@@ -159,4 +160,9 @@ void MainWindow::setNotesFontSize(int fSize)
 void MainWindow::setNoteFontSize(int fSize)
 {
     ui->plainTextEditContent->setFont(QFont("", fSize));
+}
+
+void MainWindow::showAboutWindow()
+{
+    QMessageBox::information(this, "About", "VfNotes release 1.0. Written by Arkadiusz97.");
 }
