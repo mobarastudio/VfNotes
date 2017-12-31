@@ -27,11 +27,14 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
         main.cpp \
         mainwindow.cpp \
-    QFilesContainer.cpp
+    QFilesContainer.cpp \
+    settingswindow.cpp
 
 HEADERS += \
         mainwindow.h \
-    QFilesContainer.h
+    QFilesContainer.h \
+    settingswindow.h
 
 FORMS += \
-        mainwindow.ui
+        mainwindow.ui \
+    settingswindow.ui

@@ -1,5 +1,6 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include "settingswindow.h"
 #include <QDir>
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -12,6 +13,9 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(save, SIGNAL(activated()), this, SLOT(on_pushButtonSave_clicked()));
     remove = new QShortcut(QKeySequence(QKeySequence::Delete), this);
     connect(remove, SIGNAL(activated()), this, SLOT(on_pushButtonRemove_clicked()));
+    connect(ui->actionsettings, SIGNAL(triggered(bool)), this, SLOT(showSettingsWindow()));
+    connect(&s, &settingsWindow::notesFontSize, this, &MainWindow::setNotesFontSize);
+    connect(&s, &settingsWindow::noteFontSize, this, &MainWindow::setNoteFontSize);
 }
 
 MainWindow::~MainWindow()
@@ -140,4 +144,19 @@ void MainWindow::closeEvent (QCloseEvent *event)
                 break;
         }
     }
+}
+
+void MainWindow::showSettingsWindow()
+{
+    s.show();
+}
+
+void MainWindow::setNotesFontSize(int fSize)
+{
+    ui->listWidgetNotes->setFont(QFont("", fSize));
+}
+
+void MainWindow::setNoteFontSize(int fSize)
+{
+    ui->plainTextEditContent->setFont(QFont("", fSize));
 }

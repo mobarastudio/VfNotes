@@ -6,6 +6,8 @@
 #include <QCloseEvent>
 #include <QShortcut>
 #include "QFilesContainer.h"
+#include "settingswindow.h"
+
 namespace Ui {
 class MainWindow;
 }
@@ -17,7 +19,9 @@ class MainWindow : public QMainWindow
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
-
+public slots:
+    void setNotesFontSize(int fSize);
+    void setNoteFontSize(int fSize);
 private slots:
     void on_listWidgetNotes_clicked(const QModelIndex &index);
 
@@ -33,6 +37,8 @@ private slots:
 
     void closeEvent(QCloseEvent *event);
 
+    void showSettingsWindow();
+
 private:
     Ui::MainWindow *ui;
     QFilesContainer notes;
@@ -40,6 +46,7 @@ private:
     QModelIndex lastIndex;
     QShortcut *save;
     QShortcut *remove;
+    settingsWindow s;
 };
 
 #endif // MAINWINDOW_H
