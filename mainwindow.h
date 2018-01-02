@@ -38,8 +38,12 @@ private slots:
     void closeEvent(QCloseEvent *event);
 
     void showSettingsWindow();
+
     void showAboutWindow();
 
+    void loadConfig();
+
+    void saveConfig();
 private:
     Ui::MainWindow *ui;
     QFilesContainer notes;
@@ -48,6 +52,7 @@ private:
     QShortcut *save;
     QShortcut *remove;
     settingsWindow s;
+    int iNotesFontSize, iNoteFontSize;
 };
 
 #endif // MAINWINDOW_H

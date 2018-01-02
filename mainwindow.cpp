@@ -2,9 +2,12 @@
 #include "ui_mainwindow.h"
 #include "settingswindow.h"
 #include <QDir>
+#include <QRegularExpression>
+#include <QFile>
+#include <QTextStream>
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
-    ui(new Ui::MainWindow)
+    ui(new Ui::MainWindow), iNotesFontSize(12), iNoteFontSize(12)
 {
     ui->setupUi(this);
     isModified = change = false;
@@ -17,6 +20,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->actionAbout, SIGNAL(triggered(bool)), this, SLOT(showAboutWindow()));
     connect(&s, &settingsWindow::notesFontSize, this, &MainWindow::setNotesFontSize);
     connect(&s, &settingsWindow::noteFontSize, this, &MainWindow::setNoteFontSize);
+    loadConfig();//test
 }
 
 MainWindow::~MainWindow()
@@ -128,6 +132,7 @@ void MainWindow::on_pushButtonRename_clicked()
 
 void MainWindow::closeEvent (QCloseEvent *event)
 {
+    saveConfig();
     if(isModified)
     {
         QMessageBox::StandardButton exitButton = QMessageBox::question(this, "VfNotes", tr("Do you want save changes?"), QMessageBox::Cancel | QMessageBox::No | QMessageBox::Yes);
@@ -154,15 +159,44 @@ void MainWindow::showSettingsWindow()
 
 void MainWindow::setNotesFontSize(int fSize)
 {
+    iNotesFontSize = fSize;
     ui->listWidgetNotes->setFont(QFont("", fSize));
 }
 
 void MainWindow::setNoteFontSize(int fSize)
 {
+    iNoteFontSize = fSize;
     ui->plainTextEditContent->setFont(QFont("", fSize));
 }
 
 void MainWindow::showAboutWindow()
 {
     QMessageBox::information(this, "About", "VfNotes release 1.0. Written by Arkadiusz97.");
+}
+
+void MainWindow::loadConfig()//temporarily
+{
+    QString matched;
+    QFile settingsFile("VfNotes_settings.txt");
+    settingsFile.open(QIODevice::ReadOnly|QIODevice::Text);
+    QString settingsFileContent = settingsFile.readAll();
+    QRegularExpression re1("NotesFontSize ([0-9]{1,})"), re2("NoteFontSize ([0-9]{1,})");
+    QRegularExpressionMatch match = re1.match(settingsFileContent);
+    if(match.hasMatch()) matched = match.captured(1);
+    iNotesFontSize = matched.toInt();
+    setNotesFontSize(iNotesFontSize);
+    match = re2.match(settingsFileContent);
+    if(match.hasMatch()) matched = match.captured(1);
+    iNoteFontSize = matched.toInt();
+    setNoteFontSize(iNoteFontSize);
+    settingsFile.close();
+}
+
+void MainWindow::saveConfig()
+{
+    QFile settingsFile("VfNotes_settings.txt");
+    QTextStream stream(&settingsFile);
+    settingsFile.open(QIODevice::WriteOnly|QIODevice::Truncate|QIODevice::Text);
+    stream<<"NotesFontSize "<<QString::number(iNotesFontSize)<<"\n"<<"NoteFontSize "<<QString::number(iNoteFontSize)<<"\n";
+    settingsFile.close();
 }
