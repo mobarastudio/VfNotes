@@ -48,10 +48,10 @@ QStringList QFilesContainer::removeFile()
     return getFilesList();
 }
 
-QStringList QFilesContainer::renameFile(QString oldName, QString newName)
+QStringList QFilesContainer::renameFile(QString newName)
 {
     lastFile = patch+"\\"+newName;
-    QFile::rename(patch+"\\"+oldName ,lastFile);
+    currnetFile.rename(lastFile);
     return getFilesList();
 }
 

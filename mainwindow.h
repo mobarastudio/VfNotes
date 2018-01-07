@@ -5,6 +5,7 @@
 #include <QMessageBox>
 #include <QCloseEvent>
 #include <QShortcut>
+#include <QListWidgetItem>
 #include "QFilesContainer.h"
 #include "settingswindow.h"
 
@@ -21,9 +22,9 @@ public:
     ~MainWindow();
 public slots:
     void setNotesFontSize(int fSize);
+
     void setNoteFontSize(int fSize);
 private slots:
-    void on_listWidgetNotes_clicked(const QModelIndex &index);
 
     void on_pushButtonSave_clicked();
 
@@ -44,11 +45,13 @@ private slots:
     void loadConfig();
 
     void saveConfig();
+
+    void on_listWidgetNotes_currentItemChanged(QListWidgetItem *current, QListWidgetItem *previous);
+
 private:
     Ui::MainWindow *ui;
     QFilesContainer notes;
     bool isModified, change;
-    QModelIndex lastIndex;
     QShortcut *save;
     QShortcut *remove;
     settingsWindow s;

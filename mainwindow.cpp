@@ -30,27 +30,6 @@ MainWindow::~MainWindow()
     delete remove;
 }
 
-void MainWindow::on_listWidgetNotes_clicked(const QModelIndex &index)
-{
-    ui->plainTextEditContent->setEnabled(true);
-    change = false;
-    if(isModified)
-    {
-        auto reply = QMessageBox::question(this, "Test", "Do you want save changes?", QMessageBox::Yes|QMessageBox::No|QMessageBox::Cancel);
-        if (reply == QMessageBox::Yes) on_pushButtonSave_clicked();
-        else if(reply == QMessageBox::No) notes.closeFile();
-        else
-        {
-            ui->listWidgetNotes->setCurrentIndex(lastIndex);
-            return;
-        }
-    }
-    isModified = false;
-    this->setWindowTitle(index.data().toString()+" - VfNotes 1.0");
-    ui->plainTextEditContent->setPlainText(notes.openFile(index.data().toString()));
-    lastIndex = index;
-}
-
 void MainWindow::on_pushButtonSave_clicked()
 {
     if(notes.checkOpenFile())
@@ -123,7 +102,7 @@ void MainWindow::on_pushButtonRename_clicked()
         QMessageBox::information(this, "info", "Name is empty!");
         return;
     }
-    notes.renameFile(lastIndex.data().toString(), ui->lineEditNew->text());
+    notes.renameFile(ui->lineEditNew->text());
     this->setWindowTitle(ui->lineEditNew->text()+" - VfNotes 1.0");
     ui->lineEditNew->clear();
     ui->listWidgetNotes->clear();
@@ -199,4 +178,29 @@ void MainWindow::saveConfig()
     settingsFile.open(QIODevice::WriteOnly|QIODevice::Truncate|QIODevice::Text);
     stream<<"NotesFontSize "<<QString::number(iNotesFontSize)<<"\n"<<"NoteFontSize "<<QString::number(iNoteFontSize)<<"\n";
     settingsFile.close();
+}
+
+void MainWindow::on_listWidgetNotes_currentItemChanged(QListWidgetItem *current, QListWidgetItem *previous)//Test!
+{
+    if(current != NULL)
+    {
+        ui->plainTextEditContent->setEnabled(true);
+        change = false;
+        if(isModified)
+        {
+            auto reply = QMessageBox::question(this, "Test", "Do you want save changes?", QMessageBox::Yes|QMessageBox::No|QMessageBox::Cancel);
+            if (reply == QMessageBox::Yes) on_pushButtonSave_clicked();
+            else if(reply == QMessageBox::No) notes.closeFile();
+            else
+            {
+                ui->listWidgetNotes->blockSignals(true);
+                ui->listWidgetNotes->setCurrentItem(previous);
+                ui->listWidgetNotes->blockSignals(false);
+                return;
+            }
+        }
+        isModified = false;
+        this->setWindowTitle(current->text()+" - VfNotes 1.0");
+        ui->plainTextEditContent->setPlainText(notes.openFile(current->text()));
+    }
 }

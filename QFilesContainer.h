@@ -22,7 +22,7 @@ public:
 
     QStringList removeFile();
 
-    QStringList renameFile(QString oldName, QString newName);
+    QStringList renameFile(QString newName);
 
     QStringList openDirectory(QString location);
 
