@@ -58,6 +58,7 @@ QStringList QFilesContainer::renameFile(QString newName)
 QStringList QFilesContainer::openDirectory(QString location)
 {
     patch = location;
+    dir.mkpath(location);
     isOpenDirectory = true;
     currnetFile.close();
     return getFilesList();
