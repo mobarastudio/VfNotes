@@ -5,6 +5,7 @@
 #include <QRegularExpression>
 #include <QFile>
 #include <QTextStream>
+#include <QTimer>
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow), iNotesFontSize(12), iNoteFontSize(12)
@@ -193,9 +194,12 @@ void MainWindow::on_listWidgetNotes_currentItemChanged(QListWidgetItem *current,
             else if(reply == QMessageBox::No) notes.closeFile();
             else
             {
-                ui->listWidgetNotes->blockSignals(true);
-                ui->listWidgetNotes->setCurrentItem(previous);
-                ui->listWidgetNotes->blockSignals(false);
+                QTimer::singleShot(0, qApp, [this, previous]
+                {
+                    ui->listWidgetNotes->blockSignals(true);
+                    ui->listWidgetNotes->setCurrentItem(previous);
+                    ui->listWidgetNotes->blockSignals(false);
+                });
                 return;
             }
         }
