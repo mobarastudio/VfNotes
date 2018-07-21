@@ -100,7 +100,7 @@
    </property>
    <widget class="QMenu" name="menux">
     <property name="title">
-     <string>x</string>
+     <string>menu</string>
     </property>
     <addaction name="actionsettings"/>
     <addaction name="separator"/>

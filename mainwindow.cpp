@@ -63,9 +63,13 @@ void MainWindow::on_pushButtonNew_clicked()
         else return;
     }
     isModified = false;
+    const QString newFileName = ui->lineEditNew->text();
     ui->listWidgetNotes->clear();
-    ui->listWidgetNotes->addItems(notes.newFile(ui->lineEditNew->text()));
+    ui->listWidgetNotes->addItems(notes.newFile(newFileName));
     ui->lineEditNew->clear();
+    auto matchItems = ui->listWidgetNotes->findItems(newFileName, Qt::MatchExactly);
+    ui->listWidgetNotes->setCurrentItem(matchItems[0]);
+    ui->plainTextEditContent->setFocus();
 }
 
 void MainWindow::on_pushButtonRemove_clicked()
@@ -134,6 +138,7 @@ void MainWindow::closeEvent (QCloseEvent *event)
 
 void MainWindow::showSettingsWindow()
 {
+    s.fontsInWindow(ui->plainTextEditContent->fontInfo().pointSize(), ui->listWidgetNotes->fontInfo().pointSize());
     s.show();
 }
 

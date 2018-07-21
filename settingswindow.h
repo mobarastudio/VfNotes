@@ -13,6 +13,7 @@ class settingsWindow : public QMainWindow
 
 public:
     explicit settingsWindow(QWidget *parent = 0);
+    void fontsInWindow(int noteFontSize, int notesFontSize);
     ~settingsWindow();
 signals:
     void notesFontSize(int fSize);
