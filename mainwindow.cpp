@@ -21,7 +21,8 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->actionAbout, SIGNAL(triggered(bool)), this, SLOT(showAboutWindow()));
     connect(&s, &settingsWindow::notesFontSize, this, &MainWindow::setNotesFontSize);
     connect(&s, &settingsWindow::noteFontSize, this, &MainWindow::setNoteFontSize);
-    loadConfig();//test
+    connect(&s, &settingsWindow::noteFontSize, this, &MainWindow::saveConfig);
+    loadConfig();
 }
 
 MainWindow::~MainWindow()
@@ -114,9 +115,8 @@ void MainWindow::on_pushButtonRename_clicked()
     ui->listWidgetNotes->addItems(notes.getFilesList());
 }
 
-void MainWindow::closeEvent (QCloseEvent *event)
+void MainWindow::closeEvent(QCloseEvent *event)
 {
-    saveConfig();
     if(isModified)
     {
         QMessageBox::StandardButton exitButton = QMessageBox::question(this, "VfNotes", tr("Do you want save changes?"), QMessageBox::Cancel | QMessageBox::No | QMessageBox::Yes);
@@ -125,14 +125,20 @@ void MainWindow::closeEvent (QCloseEvent *event)
             case QMessageBox::Yes:
                 on_pushButtonSave_clicked();
                 QCoreApplication::quit();
+                s.close();
                 break;
             case QMessageBox::No:
                 QCoreApplication::quit();
+                s.close();
                 break;
             case QMessageBox::Cancel:
                 event->ignore();
                 break;
         }
+    }
+    else
+    {
+        s.close();
     }
 }
 
@@ -212,4 +218,12 @@ void MainWindow::on_listWidgetNotes_currentItemChanged(QListWidgetItem *current,
         this->setWindowTitle(current->text()+" - VfNotes 1.0");
         ui->plainTextEditContent->setPlainText(notes.openFile(current->text()));
     }
+}
+
+void MainWindow::on_listWidgetNotes_clicked(const QModelIndex &index)
+{
+    ui->plainTextEditContent->setFocus();
+    QTextCursor cursor(ui->plainTextEditContent->textCursor());
+    cursor.movePosition(QTextCursor::End);
+    ui->plainTextEditContent->setTextCursor(cursor);
 }

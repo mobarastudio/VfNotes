@@ -48,6 +48,8 @@ private slots:
 
     void on_listWidgetNotes_currentItemChanged(QListWidgetItem *current, QListWidgetItem *previous);
 
+    void on_listWidgetNotes_clicked(const QModelIndex &index);
+
 private:
     Ui::MainWindow *ui;
     QFilesContainer notes;
