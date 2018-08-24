@@ -9,7 +9,7 @@ QStringList QFilesContainer::getFilesList()
 
 QString QFilesContainer::openFile(QString fileName)
 {
-    lastFile = patch+"\\"+fileName;
+    lastFile = patch+"/"+fileName;
     currnetFile.setFileName(lastFile);
     currnetFile.open(QIODevice::ReadOnly | QIODevice::Text);
     QString content;
@@ -36,7 +36,7 @@ bool QFilesContainer::saveCurrentFile(QString content)
 
 QStringList QFilesContainer::newFile(QString fileName)
 {
-    QFile file(patch+"\\"+fileName);
+    QFile file(patch+"/"+fileName);
     file.open(QIODevice::WriteOnly | QIODevice::ReadOnly | QIODevice::Text);
     file.close();
     return getFilesList();
@@ -50,7 +50,7 @@ QStringList QFilesContainer::removeFile()
 
 QStringList QFilesContainer::renameFile(QString newName)
 {
-    lastFile = patch+"\\"+newName;
+    lastFile = patch+"/"+newName;
     currnetFile.rename(lastFile);
     return getFilesList();
 }

@@ -12,7 +12,7 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
     isModified = change = false;
-    ui->listWidgetNotes->addItems(notes.openDirectory(QDir::currentPath()+"\\notes\\"));
+    ui->listWidgetNotes->addItems(notes.openDirectory(QDir::currentPath()+"/notes/"));
     save = new QShortcut(QKeySequence(QKeySequence::Save), this);
     connect(save, SIGNAL(activated()), this, SLOT(on_pushButtonSave_clicked()));
     remove = new QShortcut(QKeySequence(QKeySequence::Delete), this);
