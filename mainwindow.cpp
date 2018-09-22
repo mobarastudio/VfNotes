@@ -6,6 +6,7 @@
 #include <QFile>
 #include <QTextStream>
 #include <QTimer>
+#include <QTextStream>
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow), iNotesFontSize(12), iNoteFontSize(12)
@@ -41,6 +42,7 @@ void MainWindow::on_pushButtonSave_clicked()
     }
     notes.saveCurrentFile(ui->plainTextEditContent->toPlainText().toUtf8());
     isModified = false;
+    ui->label_3->setText(ui->label_3->text() + " - Saved!");
 }
 
 void MainWindow::on_pushButtonNew_clicked()
@@ -53,7 +55,7 @@ void MainWindow::on_pushButtonNew_clicked()
     change = false;
     if(isModified)
     {
-        auto reply = QMessageBox::question(this, "Test", "Do you want save changes?", QMessageBox::Yes|QMessageBox::No|QMessageBox::Cancel);
+        auto reply = QMessageBox::question(this, "Are you sure?", "Do you want save changes?", QMessageBox::Yes|QMessageBox::No|QMessageBox::Cancel);
         if (reply == QMessageBox::Yes)
         {
             on_pushButtonSave_clicked();
@@ -80,12 +82,12 @@ void MainWindow::on_pushButtonRemove_clicked()
         QMessageBox::information(this, "info", "File is not open!");
         return;
     }
-    auto reply = QMessageBox::question(this, "Test", "Do you want remove this note?", QMessageBox::Yes|QMessageBox::No);
+    auto reply = QMessageBox::question(this, "Are you sure?", "Do you want remove this note?", QMessageBox::Yes|QMessageBox::No);
     if(reply == QMessageBox::Yes)
     {
         ui->listWidgetNotes->clear();
         ui->listWidgetNotes->addItems(notes.removeFile());
-        this->setWindowTitle("VfNotes 1.0");
+        this->setWindowTitle("VfNotes 1.1");
         ui->plainTextEditContent->clear();
         ui->plainTextEditContent->setEnabled(false);
         isModified = change = false;
@@ -109,7 +111,11 @@ void MainWindow::on_pushButtonRename_clicked()
         return;
     }
     notes.renameFile(ui->lineEditNew->text());
-    this->setWindowTitle(ui->lineEditNew->text()+" - VfNotes 1.0");
+    this->setWindowTitle(ui->lineEditNew->text()+" - VfNotes 1.1");
+
+    QString nazwaPliku = ui->lineEditNew->text();
+    ui->label_3->setText(nazwaPliku);
+
     ui->lineEditNew->clear();
     ui->listWidgetNotes->clear();
     ui->listWidgetNotes->addItems(notes.getFilesList());
@@ -162,7 +168,7 @@ void MainWindow::setNoteFontSize(int fSize)
 
 void MainWindow::showAboutWindow()
 {
-    QMessageBox::information(this, "About", "VfNotes release 1.0. Written by Arkadiusz97.");
+    QMessageBox::information(this, "About", "VfNotes release 1.1. Written by Arkadiusz97.");
 }
 
 void MainWindow::loadConfig()//temporarily
@@ -215,7 +221,11 @@ void MainWindow::on_listWidgetNotes_currentItemChanged(QListWidgetItem *current,
             }
         }
         isModified = false;
-        this->setWindowTitle(current->text()+" - VfNotes 1.0");
+        this->setWindowTitle(current->text()+" - VfNotes 1.1");
+
+        QString nazwaPliku = current->text();
+        ui->label_3->setText(nazwaPliku);
+
         ui->plainTextEditContent->setPlainText(notes.openFile(current->text()));
     }
 }
@@ -226,4 +236,54 @@ void MainWindow::on_listWidgetNotes_clicked(const QModelIndex &index)
     QTextCursor cursor(ui->plainTextEditContent->textCursor());
     cursor.movePosition(QTextCursor::End);
     ui->plainTextEditContent->setTextCursor(cursor);
+}
+
+ QString kompozycja = "dark";
+
+
+
+void MainWindow::on_pushButton_clicked()
+{
+    if(kompozycja == "dark")
+    {
+        kompozycja = "light";
+
+
+
+        ui->plainTextEditContent->setStyleSheet("background-color: white; color:black;");
+        ui->listWidgetNotes->setStyleSheet("background-color: white; color:black;");
+        ui->lineEditNew->setStyleSheet("background-color: white; color:black;");
+        setStyleSheet("background-color: lightgray;");
+        ui->pushButton->setText("Dark");
+        ui->pushButton->setStyleSheet("color: black;");
+        ui->pushButtonSave->setStyleSheet("color:black;");
+        ui->pushButtonNew->setStyleSheet("color: black;");
+        ui->label->setStyleSheet("color: black");
+        ui->label_2->setStyleSheet("color: black");
+        ui->label_3->setStyleSheet("color: black");
+        ui->pushButtonRemove->setStyleSheet("color: black;");
+        ui->pushButtonRename->setStyleSheet("color: black;");
+    } else if(kompozycja == "light")
+    {
+        kompozycja = "dark";
+
+        ui->plainTextEditContent->setStyleSheet("background-color: #474747; color:white;");
+        ui->listWidgetNotes->setStyleSheet("background-color: #474747; color:white;");
+        ui->lineEditNew->setStyleSheet("background-color: #474747; color:white;");
+        setStyleSheet("background-color: #303739;");
+        ui->pushButton->setStyleSheet("color: white;");
+        ui->pushButton->setText("Light");
+        ui->pushButtonSave->setStyleSheet("background-color: #314d68;");
+        ui->pushButtonNew->setStyleSheet("background-color: #00682f;");
+        ui->label->setStyleSheet("color: white");
+        ui->label_2->setStyleSheet("color: white");
+        ui->label_3->setStyleSheet("color: white");
+        ui->pushButtonRemove->setStyleSheet("background-color: #ce0a1b;");
+        ui->pushButtonRename->setStyleSheet("background-color: #b24f1e;");
+
+    } else
+    {
+        QMessageBox::information(this, "info", "Error!");
+        return;
+    }
 }
